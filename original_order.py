@@ -19,14 +19,15 @@ from email.header import Header
 now_time_r = datetime.datetime.now()
 now_time = datetime.datetime.strftime(now_time_r,'%Y-%m-%d_%H_%M')
 #balance_csv = "D:\\workpalce\\csv_file\\"+now_time+"_代理余额.csv"
-balance_csv = "E:\\csv_file\\"+now_time+"_代理余额.csv"
+balance_csv = "E:\\csv_file\\"+now_time+"_原始单号.csv"
+file_name = "原始单号"+now_time+".csv"
 
 class cnMySQL:
     def __init__(self):
         self._dbhost = 'rm-bp1cim09l95sf67dplo.mysql.rds.aliyuncs.com'
         self._dbuser = 'python_dba'
         self._dbpassword = 'Python_dba1'
-        self._dbname = 'prod_user'
+        self._dbname = 'prod_order'
         self._dbcharset = 'utf8'
         self._dbport = int(3306)
         self._conn = self.connectMySQL()
@@ -80,39 +81,18 @@ def checkBalance():
     提取所有代理的账户余额
     """
     conn = cnMySQL()
-    checkbalance_sql = "SELECT a.id 代理id,\
-                        a.NAME 代理姓名,\
-                        a.auth_code 授权码,\
-                    CASE a.level_id \
-                        WHEN '1' THEN  '分公司' \
-                        WHEN '2' THEN  '合伙人' \
-                        WHEN '3' THEN  '官方' \
-                        WHEN '4' THEN  '省代' \
-                        WHEN '5' THEN  '市代' \
-                        WHEN '6' THEN  '会员' ELSE '其他' \
-                        END AS 代理等级,\
-                    CASE a.region_id \
-                        WHEN '1' THEN  '笛梦大区' \
-                        WHEN '2' THEN  '环球大区' \
-                        WHEN '3' THEN  '辉煌大区' \
-                        WHEN '4' THEN  '聚米大区' \
-                        WHEN '5' THEN  '聚星大区' \
-                        WHEN '6' THEN  '口口大区' \
-                        WHEN '7' THEN  '米苏大区' \
-                        WHEN '8' THEN  '野狼大区' \
-                        WHEN '9' THEN  '海纳百川大区' \
-                        WHEN '10' THEN '红红大区' \
-                        WHEN '11' THEN '熊熊大区' \
-                        WHEN '12' THEN '飞越大区' \
-                        WHEN '13' THEN '测试大区' ELSE '其他'\
-                        END AS 所属大区,\
-                        d.balance_amt 余额\
+    checkbalance_sql = "SELECT\
+                        t.shop_trade_no,\
+                        p.biz_trade_no \
                     FROM\
-                        prod_user.renren_distributor a,\
-                        prod_finance.distributor_balance_info d \
-                    WHERE  a.id = d.distributor_id;"
+                        rupt_shop_trade AS t\
+                        JOIN rupt_purchase_order AS p ON t.fx_purchase_order_no = p.purchase_order_no \
+                    WHERE\
+                        t.shop_id = 1171 \
+                        AND t.fx_shop_id = 32 \
+                        AND t.trade_type = 'FENXIAO';"
     balance = conn.ExecQuery(checkbalance_sql)
-    headers = ['代理id','代理姓名','授权码','代理等级','所属大区','余额']
+    headers = ['shop_trade_no','biz_trade_no']
     with  open(balance_csv,'w',newline='') as f:
         f_csv = csv.DictWriter(f,headers)
         f_csv.writeheader()
@@ -127,24 +107,24 @@ def sendMail():
     mail_pass='wcasswmrgsnobdgh'
 
     sender='1058582934@qq.com'
-    receivers = ['pd@xitu.com','chenxing@xitu.com','cj@xitu.com','sxl@xitu.com','dxy@xitu.com','xjj@xitu.com','gaowei@xitu.com','ht@xitu.com']
-    #receivers=['1058582934@qq.com']
+    #receivers = ['pd@xitu.com','chenxing@xitu.com','cj@xitu.com','sxl@xitu.com','dxy@xitu.com','xjj@xitu.com','gaowei@xitu.com']
+    receivers=['gaowei@xitu.com','xjj@xitu.com','gfy@xitu.com']
     
     #创建一个带附件的实例
     message = MIMEMultipart()
     message['From'] = Header("技术中心-高巍", 'utf-8')
-    message['To'] =  Header("财务报表", 'utf-8')
-    subject = '每日代理余额明细'
+    message['To'] =  Header("原始订单号", 'utf-8')
+    subject = '原始订单号'
     message['Subject'] = Header(subject, 'utf-8')
 
     #邮件正文内容
-    message.attach(MIMEText('hi:\n    附件是今日代理余额报表，请查收。 如有问题可与我联系\n\n\n技术中心-高巍', 'plain', 'utf-8'))
+    message.attach(MIMEText('hi:\n    附件是最新的原始订单报表，请查收。 如有问题可与我联系\n\n\n技术中心-高巍', 'plain', 'utf-8'))
 
     # 构造附件1，传送当前目录下的 balance_csv 文件
     att1 = MIMEText(open(balance_csv, 'rb').read(), 'base64', 'utf-8')
     att1["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att1.add_header("Content-Disposition", "attachment", filename='每日代理余额明细.csv')
+    att1.add_header("Content-Disposition", "attachment", filename=file_name)
     message.attach(att1)
 
     try:
