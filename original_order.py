@@ -19,7 +19,6 @@ import pandas as pd
 #D:\workpalce\csv_file
 now_time_r = datetime.datetime.now()
 now_time = datetime.datetime.strftime(now_time_r,'%Y-%m-%d_%H_%M')
-#balance_csv = "E:\\csv_file\\"+now_time+"_原始单号.csv"
 balance_xlsx = "E:\\csv_file\\"+now_time+"_原始单号.xlsx"
 orderdetails_xlsx = "E:\\csv_file\\"+now_time+"_原始单号明细.xlsx"
 file_name = "原始单号"+now_time+".xlsx"
@@ -177,7 +176,7 @@ def sendMail():
     #邮件正文内容
     message.attach(MIMEText('hi:\n    附件是最新的原始订单报表，请查收。 如有问题可与我联系\n\n\n技术中心-高巍', 'plain', 'utf-8'))
 
-    # 构造附件1，传送当前目录下的 balance_csv 文件
+    # 构造附件1，传送当前目录下的 balance_xlsx 文件
     att1 = MIMEText(open(balance_xlsx, 'rb').read(), 'base64', 'utf-8')
     att1["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字

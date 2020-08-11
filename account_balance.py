@@ -3,7 +3,7 @@
 # @Author  : Stephev
 # @Site    : 
 # @File    : Payment.py
-# @Software:
+# @Remarks :每日进行代理余额查询
 
 
 import pymysql
@@ -13,13 +13,14 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
+import pandas as pd
 
 
 #D:\workpalce\csv_file
 now_time_r = datetime.datetime.now()
 now_time = datetime.datetime.strftime(now_time_r,'%Y-%m-%d_%H_%M')
 #balance_csv = "D:\\workpalce\\csv_file\\"+now_time+"_代理余额.csv"
-balance_csv = "E:\\csv_file\\"+now_time+"_代理余额.csv"
+balance_csv = "E:\\csv_file\\"+now_time+"_代理余额明细.xlsx"
 
 class cnMySQL:
     def __init__(self):
@@ -113,11 +114,15 @@ def checkBalance():
                     WHERE  a.id = d.distributor_id;"
     balance = conn.ExecQuery(checkbalance_sql)
     headers = ['代理id','代理姓名','授权码','代理等级','所属大区','余额']
+    dt = pd.DataFrame(balance,columns=headers)
+    dt.to_excel(balance_csv,index=0)
+    """
     with  open(balance_csv,'w',newline='') as f:
         f_csv = csv.DictWriter(f,headers)
         f_csv.writeheader()
         f_csv.writerows(balance)
     f.close()
+    """
     return
 
 
@@ -127,8 +132,8 @@ def sendMail():
     mail_pass='wcasswmrgsnobdgh'
 
     sender='1058582934@qq.com'
-    receivers = ['pd@xitu.com','chenxing@xitu.com','cj@xitu.com','sxl@xitu.com','dxy@xitu.com','xjj@xitu.com','gaowei@xitu.com','ht@xitu.com']
-    #receivers=['1058582934@qq.com']
+    receivers = ['pd@xitu.com','chenxing@xitu.com','cj@xitu.com','sxl@xitu.com','dxy@xitu.com','xjj@xitu.com','gaowei@xitu.com']
+    #receivers=['gaowei@xitu.com']
     
     #创建一个带附件的实例
     message = MIMEMultipart()
@@ -144,7 +149,7 @@ def sendMail():
     att1 = MIMEText(open(balance_csv, 'rb').read(), 'base64', 'utf-8')
     att1["Content-Type"] = 'application/octet-stream'
     # 这里的filename可以任意写，写什么名字，邮件中显示什么名字
-    att1.add_header("Content-Disposition", "attachment", filename='每日代理余额明细.csv')
+    att1.add_header("Content-Disposition", "attachment", filename=balance_csv)
     message.attach(att1)
 
     try:
