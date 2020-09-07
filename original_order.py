@@ -91,7 +91,7 @@ def checkBalance():
                         rupt_shop_trade AS t\
                         JOIN rupt_purchase_order AS p ON t.fx_purchase_order_no = p.purchase_order_no \
                     WHERE\
-                        t.shop_id = 1171 \
+                        t.shop_id = 1200 \
                         AND t.fx_shop_id = 32 \
                         AND t.trade_type = 'FENXIAO';"
     balance = conn.ExecQuery(checkbalance_sql)
@@ -145,7 +145,7 @@ def checkBalance():
                         JOIN rupt_purchase_order AS s ON s.purchase_order_no = p.biz_trade_no\
                         JOIN prod_user.renren_distributor a ON s.source_id = a.id\
                     WHERE\
-                        t.shop_id = 1171\
+                        t.shop_id = 1200\
                         AND t.fx_shop_id = 32\
                         AND p.shop_id = 32\
                         AND s.shop_id = 32 \
@@ -164,7 +164,7 @@ def sendMail():
 
     sender='1058582934@qq.com'
     #receivers = ['gaowei@xitu.com']
-    receivers=['gaowei@xitu.com','xjj@xitu.com','gfy@xitu.com','ht@xitu.com','yzw@xitu.com']
+    receivers=['gaowei@xitu.com','xjj@xitu.com','gfy@xitu.com','ht@xitu.com','yzw@xitu.com','wangxinrui@xitu.com']
     
     #创建一个带附件的实例
     message = MIMEMultipart()

@@ -157,7 +157,7 @@ def sendMail():
     message['Subject'] = Header(subject, 'utf-8')
 
     #邮件正文内容
-    message.attach(MIMEText('hi:\n    附件是每周五代理进货总额明细，请查收。此次为测试，如有问题可与我联系\n\n\n   说明：1.进货总额为个人及其下级等级为合伙人代理的 所有进货订单总额之和，不含运费 \n      2.计入统计的订单状态为代发货，调货中，待收货，完成。\n\n\n技术中心-高巍', 'plain', 'utf-8'))
+    message.attach(MIMEText('hi:\n    附件是每周五代理进货总额明细，请查收。如有问题可与我联系\n\n\n   说明：1.进货总额为个人及其下级等级为合伙人代理的 所有进货订单总额之和，不含运费 \n      2.计入统计的订单状态为代发货，调货中，待收货，完成。\n\n\n技术中心-高巍', 'plain', 'utf-8'))
 
     # 构造附件1，传送当前目录下的 totalsales_xlsx 文件
     att1 = MIMEText(open(totalsales_xlsx, 'rb').read(), 'base64', 'utf-8')
