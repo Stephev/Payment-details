@@ -121,7 +121,7 @@ def sendMail():
     mail_pass='wcasswmrgsnobdgh'
 
     sender='1058582934@qq.com'
-    receivers = ['pd@xitu.com','chenxing@xitu.com','cj@xitu.com','sxl@xitu.com','dxy@xitu.com','xjj@xitu.com','gaowei@xitu.com']
+    receivers = ['pd@xitu.com','chenxing@xitu.com','cj@xitu.com','sxl@xitu.com','dxy@xitu.com','xjj@xitu.com','gaowei@xitu.com','563415231@qq.com']
     #receivers=['gaowei@xitu.com']
     
     #创建一个带附件的实例
@@ -132,7 +132,7 @@ def sendMail():
     message['Subject'] = Header(subject, 'utf-8')
 
     #邮件正文内容
-    message.attach(MIMEText('hi:\n    附件是今日代理库存明细报表，请查收。 如有问题可与我联系\n\n\n需要注意：1、本次发送为测试脚本 \n        2、云库存数量均为可发货数量\n\n\n技术中心-高巍', 'plain', 'utf-8'))
+    message.attach(MIMEText('hi:\n    附件是今日代理库存明细报表，请查收。 如有问题可与我联系\n\n\n需要注意：1、云库存数量均为可发货数量\n\n\n技术中心-高巍', 'plain', 'utf-8'))
 
     # 构造附件1，传送当前目录下的 inventoryquantity_xlsx 文件
     att1 = MIMEText(open(inventoryquantity_xlsx, 'rb').read(), 'base64', 'utf-8')
