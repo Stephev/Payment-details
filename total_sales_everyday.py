@@ -134,7 +134,7 @@ def total_cash_final_cash_together():
                                         prod_order.rupt_purchase_order b,\
                                         prod_order.rupt_purchase_order_item c\
                                     where  a.id = b.source_id and b.purchase_order_no = c.purchase_order_no \
-                                    and b.status in (6,7,8,9) and c.goods_id in (10083,10188,10169,10167,10295,10092,10227,82,15887) and a.id in  %s) aa where d.id in %s",sql_condition,cansai_id)
+                                    and b.status in (6,7,8,9) and c.goods_id in (10083,10188,10169,10167,10295,10092,10227,82,15887) and b.submit_time < '2020-10-11 00:00:00' and a.id in  %s) aa where d.id in %s",sql_condition,cansai_id)
         #print(total_cash_result)
         Statistics_rows.extend(total_cash_result)
     print(Statistics_rows)
@@ -199,7 +199,7 @@ def sendMail():
     message['Subject'] = Header(subject, 'utf-8')
 
     #邮件正文内容
-    message.attach(MIMEText('hi:\n    附件是每日代理进货总额,代理充值总额，请查收。如有问题可与我联系\n\n\n   说明：1.进货总额为个人及其下级等级为合伙人代理的 所有进货订单总额之和，不含运费。商品id为：10083,10188,10169,10167,10295,10092,10227,82,15887 \n        2.计入统计的订单状态为代发货，调货中，待收货，完成。\n        3、20200926日更新，新增商品id15887 计入统计商品：卡位包。\n        4、新增提名代理（下面的官方合伙人）充值总额统计，时间范围是始于 20200920 0点，见附件2，表格中为空即暂无充值记录\n\n\n技术中心-高巍', 'plain', 'utf-8'))
+    message.attach(MIMEText('hi:\n    附件是每日代理进货总额,代理充值总额，请查收。如有问题可与我联系\n\n\n   说明：1.进货总额为个人及其下级等级为合伙人代理的 所有进货订单总额之和，不含运费。商品id为：10083,10188,10169,10167,10295,10092,10227,82,15887 \n        2.计入统计的订单状态为代发货，调货中，待收货，完成。\n        3、20200926日更新，新增商品id15887 计入统计商品：卡位包。\n        4、新增提名代理（下面的官方合伙人）充值总额统计，时间范围是始于 20200920 0点，见附件2，表格中为空即暂无充值记录\n       5、2020-10-12更新，限制订单的提交时间，因为活动已经结束，把订单范围限制在 2020-10-11 00:00:00  之内\n\n\n技术中心-高巍', 'plain', 'utf-8'))
 
     # 构造附件1，传送当前目录下的 totalsales_xlsx 文件
     att1 = MIMEText(open(totalsales_xlsx, 'rb').read(), 'base64', 'utf-8')

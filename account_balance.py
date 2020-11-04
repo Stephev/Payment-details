@@ -105,13 +105,20 @@ def checkBalance():
                         WHEN '10' THEN '红红大区' \
                         WHEN '11' THEN '熊熊大区' \
                         WHEN '12' THEN '飞越大区' \
+                        WHEN '37' THEN '非池大区' \
+                        WHEN '38' THEN '星火创客大区' \
+                        WHEN '39' THEN '龙马大区' \
+                        WHEN '40' THEN '晨晨大区' \
+                        WHEN '41' THEN '小平大区' \
+                        WHEN '42' THEN '米兰大区' \
+                        WHEN '43' THEN '勇者大区' \
                         WHEN '13' THEN '测试大区' ELSE '其他'\
                         END AS 所属大区,\
                         d.balance_amt 余额\
                     FROM\
                         prod_user.renren_distributor a,\
                         prod_finance.distributor_balance_info d \
-                    WHERE  a.id = d.distributor_id;"
+                    WHERE  a.id = d.distributor_id and a.shop_id = 32;"
     balance = conn.ExecQuery(checkbalance_sql)
     headers = ['代理id','代理姓名','授权码','代理等级','所属大区','余额']
     dt = pd.DataFrame(balance,columns=headers)
@@ -132,7 +139,7 @@ def sendMail():
     mail_pass='wcasswmrgsnobdgh'
 
     sender='1058582934@qq.com'
-    receivers = ['pd@xitu.com','chenxing@xitu.com','cj@xitu.com','sxl@xitu.com','dxy@xitu.com','xjj@xitu.com','gaowei@xitu.com']
+    receivers = ['pd@xitu.com','chenxing@xitu.com','cj@xitu.com','sxl@xitu.com','dxy@xitu.com','xjj@xitu.com','gaowei@xitu.com','gfy@xitu.com']
     #receivers=['gaowei@xitu.com']
     
     #创建一个带附件的实例
@@ -143,7 +150,7 @@ def sendMail():
     message['Subject'] = Header(subject, 'utf-8')
 
     #邮件正文内容
-    message.attach(MIMEText('hi:\n    附件是今日代理余额报表，请查收。 如有问题可与我联系\n\n\n技术中心-高巍', 'plain', 'utf-8'))
+    message.attach(MIMEText('hi:\n    附件是今日代理余额报表，请查收。 如有问题可与我联系\n\n\n需要注意：1、20201026更新，添加新大区的信息\n\n\n技术中心-高巍', 'plain', 'utf-8'))
 
     # 构造附件1，传送当前目录下的 balance_csv 文件
     att1 = MIMEText(open(balance_csv, 'rb').read(), 'base64', 'utf-8')
